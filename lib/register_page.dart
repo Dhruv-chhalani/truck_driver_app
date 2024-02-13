@@ -1,17 +1,111 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:truck_driver_app/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
+
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _MyRegisterState createState() => _MyRegisterState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+final TextEditingController _nameController = TextEditingController();
+
+class _MyRegisterState extends State<RegisterPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
+    Future<void> _showSuccessDialog() async {
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Registration Successful'),
+            content: Text('Your account has been created successfully.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, 'login');
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showErrorDialog(String errorMessage) async {
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Registration Failed'),
+            content: Text(errorMessage),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<bool> createUser(email, password) async {
+      try {
+        final User = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+          await _showErrorDialog('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email.');
+          await _showErrorDialog('The account already exists for that email');
+        }
+      }
+      // catch (e) {
+      //   await _showErrorDialog('Error: $e');
+      // }
+
+      if (FirebaseAuth.instance.currentUser != null) {
+        await FirebaseAuth.instance.signOut();
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    Future<void> register() async {
+      final email = emailController.text;
+      final password = passwordController.text;
+
+      final userCreated = await createUser(email, password);
+      if (userCreated) {
+        await _showSuccessDialog();
+        //Navigator.pushNamed(context, 'login');
+      } else {
+        print('Error');
+        _showErrorDialog("error");
+      }
+      //dispose();
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -33,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             SizedBox(height: 20),
             TextField(
-              controller: _emailController,
+              controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: 'Email',
@@ -44,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             SizedBox(height: 20),
             TextField(
-              controller: _passwordController,
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -62,11 +156,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                await register();
+              },
               child: Text('Sign Up'),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage())),
               child: Text('Already have an account? Login'),
             ),
           ],
