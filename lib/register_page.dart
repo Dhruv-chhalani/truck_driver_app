@@ -150,8 +150,8 @@ class _MyRegisterState extends State<RegisterPage> {
             SizedBox(height: 30),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.black, // Button color set to black
-                onPrimary: Colors.white, // Text color set to white
+                backgroundColor: Colors.black, // Button color set to black
+                foregroundColor: Colors.white, // Text color set to white
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
