@@ -34,7 +34,7 @@ class _MyRegisterState extends State<RegisterPage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, 'login');
+                  // Navigator.pushNamed(context, 'login');
                 },
                 child: Text('OK'),
               ),
@@ -98,7 +98,8 @@ class _MyRegisterState extends State<RegisterPage> {
       final userCreated = await createUser(email, password);
       if (userCreated) {
         await _showSuccessDialog();
-        //Navigator.pushNamed(context, 'login');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       } else {
         print('Error');
         _showErrorDialog("error");

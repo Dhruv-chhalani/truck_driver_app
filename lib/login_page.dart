@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:truck_driver_app/dashboard_page.dart';
 import 'register_page.dart'; // Ensure this import is correct based on your project structure
 
 class LoginPage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, 'dashboard');
+                  // Navigator.pushNamed(context, 'dashboard');
                 },
                 child: Text('OK'),
               ),
@@ -92,7 +93,8 @@ class _LoginPageState extends State<LoginPage> {
       final userCreated = await getUser(email, password);
       if (userCreated) {
         await _showSuccessDialog();
-        //Navigator.pushNamed(context, 'dashboard');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => DashboardPage()));
       } else {
         print('Error');
         _showErrorDialog("error");

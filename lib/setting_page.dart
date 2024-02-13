@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:truck_driver_app/login_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -62,8 +64,10 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             title: Text('Sign Out'),
             leading: Icon(Icons.exit_to_app),
-            onTap: () {
-              // Add your sign out logic here
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
             },
           ),
         ],
