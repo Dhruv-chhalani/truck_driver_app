@@ -7,6 +7,7 @@ class RecentServicesWidget extends StatefulWidget {
   const RecentServicesWidget({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _RecentServicesWidgetState createState() => _RecentServicesWidgetState();
 }
 
