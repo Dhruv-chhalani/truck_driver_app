@@ -1,8 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 
-class DashboardPage extends StatelessWidget {
+// class DashboardPage extends StatelessWidget {
+//    LatLng _currentLocation = LatLng(0, 0); // Default location
+
+//   @override
+//   void initState() {
+//     initState();
+//     _getCurrentLocation();
+//   }
+
+//   Future<void> _getCurrentLocation() async {
+//     try {
+//       Position position = await Geolocator.getCurrentPosition(
+//           desiredAccuracy: LocationAccuracy.high);
+//       setState(() {
+//         _currentLocation = LatLng(position.latitude, position.longitude);
+//       });
+//     } catch (e) {
+//       print('Failed to get location: $e');
+//     }
+//   }
+class DashboardPage extends StatefulWidget {
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  LatLng _currentLocation = LatLng(23.0261076, 72.5565443); // Default location
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      setState(() {
+        _currentLocation = LatLng(position.latitude, position.longitude);
+      });
+    } catch (e) {
+      print('Failed to get location: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +79,10 @@ class DashboardPage extends StatelessWidget {
               margin: EdgeInsets.all(16),
               width: double.infinity,
               child: Center(
+                //  LatLng(23.0261076, 72.5565443)
                 child: FlutterMap(
                   options: MapOptions(
-                    initialCenter: LatLng(23.0261076, 72.5565443),
+                    initialCenter: _currentLocation,
                     initialZoom: 14,
                   ),
                   children: [
@@ -46,15 +93,27 @@ class DashboardPage extends StatelessWidget {
                     ),
                     MarkerLayer(
                       markers: [
+                        // Marker(
+                        //   point: LatLng(23.0261076, 72.5565443),
+                        //   width: 80,
+                        //   height: 80,
+                        //   child: Image.network(
+                        //     'https://cdn-icons-png.flaticon.com/512/2344/2344094.png',
+                        //     width: 20,
+                        //     height: 20,
+                        //     fit: BoxFit.cover,
+                        //   ),
+                        // ),
                         Marker(
-                          point: LatLng(23.0261076, 72.5565443),
+                          point: _currentLocation,
                           width: 80,
                           height: 80,
-                          child: Image.network(
-                            'https://cdn-icons-png.flaticon.com/512/2344/2344094.png',
-                            width: 20,
-                            height: 20,
-                            fit: BoxFit.cover,
+                          child: Container(
+                            child: Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 50.0,
+                            ),
                           ),
                         ),
                       ],
